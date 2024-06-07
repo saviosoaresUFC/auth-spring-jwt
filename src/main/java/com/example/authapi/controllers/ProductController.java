@@ -5,6 +5,7 @@ import com.example.authapi.domain.product.ProductRequestDto;
 import com.example.authapi.domain.product.ProductResponseDto;
 import com.example.authapi.repositories.ProductRepository;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,12 +13,9 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/product")
+@RequiredArgsConstructor
 public class ProductController {
     private final ProductRepository productRepository;
-
-    public ProductController(ProductRepository productRepository) {
-        this.productRepository = productRepository;
-    }
 
     @PostMapping("/add")
     public ResponseEntity<String> addProduct(@RequestBody @Valid ProductRequestDto productRequestDto) {

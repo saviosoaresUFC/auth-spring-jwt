@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.GenericGenerator;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,7 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 
-@Entity(name = "User")
+@Entity
 @Table(name = "users")
 @Getter
 @NoArgsConstructor
@@ -20,12 +21,15 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
-    private String login;
+
+    private String name;
+    private String email;
     private String password;
     private UserRole role;
 
-    public User(String login, String password, UserRole role) {
-        this.login = login;
+    public User(String name, String email, String password, UserRole role) {
+        this.name = name;
+        this.email = email;
         this.password = password;
         this.role = role;
     }
@@ -43,7 +47,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return login;
+        return this.email;
     }
 
     @Override

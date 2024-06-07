@@ -1,5 +1,6 @@
 package com.example.authapi.infra.security;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -16,12 +17,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfiguration{
     final SecurityFilter securityFilter;
-
-    public SecurityConfiguration(SecurityFilter securityFilter){
-        this.securityFilter = securityFilter;
-    }
 
 //        Disable CSRF
 //        Set session management to stateless
@@ -38,19 +36,21 @@ public class SecurityConfiguration{
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
                         .requestMatchers(HttpMethod.POST, "/product/add").hasRole("ADMIN")
+                        // Any other request must be authenticated
                         .anyRequest().authenticated()
                 )
+                // Before of all filters, add the security filter
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
     @Bean
-    protected AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
+    protected PasswordEncoder passwordEncoder(){
+        return new BCryptPasswordEncoder();
     }
 
     @Bean
-    protected PasswordEncoder passwordEncoder(){
-        return new BCryptPasswordEncoder();
+    protected AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
     }
 }

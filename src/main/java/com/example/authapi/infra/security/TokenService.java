@@ -20,13 +20,13 @@ public class TokenService {
 
     public String generateToken(User user) {
         try {
-//        Implementacao da geracao do token JWT
+//            Implementation of JWT token generation
             Algorithm algorithm = Algorithm.HMAC256(secret);
-//            O token eh gerado com o emissor, o assunto (login do usuario),
-//            a data de expiracao e o algoritmo de criptografia
+//            The token is generated with the issuer[emissor], the subject (user login),
+//            the expiration date and the encryption algorithm
             return JWT.create()
                     .withIssuer(ISSUER)
-                    .withSubject(user.getLogin())
+                    .withSubject(user.getEmail())
                     .withExpiresAt(getExpirationDate())
                     .sign(algorithm);
         } catch (JWTCreationException exception) {
