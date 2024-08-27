@@ -1,7 +1,15 @@
 package com.example.authapi.domain.product;
 
-public record ProductResponseDto(String id, String name, Integer price){
+import java.util.UUID;
+
+public record ProductResponseDto(
+        UUID id,
+        String observation,
+        String productName,
+        boolean status,
+        String urlImage
+){
     public ProductResponseDto(Product product) {
-        this(product.getId(), product.getName(), product.getPrice());
+        this(product.getId(), product.getObservation(), product.getProductName(), product.isStatus(), product.getUrlImage());
     }
 }

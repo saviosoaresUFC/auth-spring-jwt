@@ -1,9 +1,6 @@
 package com.example.authapi.controllers;
 
-import com.example.authapi.domain.user.AuthenticationDTO;
-import com.example.authapi.domain.user.LoginResponseDTO;
-import com.example.authapi.domain.user.RegisterDto;
-import com.example.authapi.domain.user.User;
+import com.example.authapi.domain.user.*;
 import com.example.authapi.infra.security.TokenService;
 import com.example.authapi.repositories.UserRepository;
 import jakarta.validation.Valid;
@@ -13,10 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/auth")
@@ -41,14 +35,15 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponseDTO> login(@RequestBody @Valid AuthenticationDTO authenticationDTO) {
+    public ResponseEntity<LoginResponseDTO> login(@RequestBody @Valid AuthenticationDTO authenticationDTO)  {
 //        Authenticate the user
         var usernamePasswordToken = new UsernamePasswordAuthenticationToken(authenticationDTO.email(), authenticationDTO.password());
         var auth = authenticationManager.authenticate(usernamePasswordToken);
         User userAuthenticated = (User) auth.getPrincipal();
 //        Generate the token of the user
         var tokenUser = tokenService.generateToken(userAuthenticated);
+        UserRole role = userAuthenticated.getRole();
 //        Return the token
-        return ResponseEntity.status(HttpStatus.OK).body(new LoginResponseDTO(userAuthenticated.getName(), tokenUser));
+        return ResponseEntity.status(HttpStatus.OK).body(new LoginResponseDTO(userAuthenticated.getName(), tokenUser, role));
     }
 }
